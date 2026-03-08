@@ -1,43 +1,211 @@
 import { motion } from "framer-motion";
-import { Search, Filter, TrendingUp, TrendingDown, Star } from "lucide-react";
+import { Search, Eye, TrendingUp, Star, LayoutGrid, List, ChevronDown } from "lucide-react";
 import { useState } from "react";
 
-const allStocks = [
-  { symbol: "RELIANCE", name: "Reliance Industries", sector: "Oil & Gas", price: 2850, change: 1.2, pe: 28, mcap: "19.2L Cr", rating: 4 },
-  { symbol: "TCS", name: "Tata Consultancy", sector: "IT Services", price: 3920, change: -0.5, pe: 32, mcap: "14.3L Cr", rating: 5 },
-  { symbol: "INFY", name: "Infosys Ltd", sector: "IT Services", price: 1580, change: 0.8, pe: 26, mcap: "6.5L Cr", rating: 4 },
-  { symbol: "HDFCBANK", name: "HDFC Bank", sector: "Banking", price: 1620, change: 0.3, pe: 20, mcap: "12.3L Cr", rating: 5 },
-  { symbol: "ICICIBANK", name: "ICICI Bank", sector: "Banking", price: 1050, change: -0.2, pe: 18, mcap: "7.4L Cr", rating: 4 },
-  { symbol: "SBIN", name: "State Bank of India", sector: "Banking", price: 625, change: -0.7, pe: 10, mcap: "5.6L Cr", rating: 3 },
-  { symbol: "TATAMOTORS", name: "Tata Motors", sector: "Automobile", price: 720, change: 2.1, pe: 8, mcap: "2.6L Cr", rating: 4 },
-  { symbol: "BAJFINANCE", name: "Bajaj Finance", sector: "Finance", price: 7200, change: 1.5, pe: 35, mcap: "4.4L Cr", rating: 4 },
-  { symbol: "ITC", name: "ITC Ltd", sector: "FMCG", price: 445, change: 1.5, pe: 25, mcap: "5.5L Cr", rating: 3 },
-  { symbol: "WIPRO", name: "Wipro Ltd", sector: "IT Services", price: 480, change: -1.2, pe: 22, mcap: "2.5L Cr", rating: 3 },
-];
+interface ThemeBucket {
+  title: string;
+  description: string;
+  views: string;
+  trending: boolean;
+  companies: number;
+  sampleStocks: string[];
+  updatedAt: string;
+  icon: string;
+}
 
-const sectors = ["All", ...Array.from(new Set(allStocks.map(s => s.sector)))];
+const buckets: ThemeBucket[] = [
+  {
+    title: "Artificial Intelligence (AI)",
+    description: "Companies that develop AI models, platforms, or AI-driven products and services which analyze data, automate tasks, or deliver decision support across industries.",
+    views: "3.8k",
+    trending: true,
+    companies: 182,
+    sampleStocks: ["HCLTECH", "INFY", "TCS"],
+    updatedAt: "March 1, 2026",
+    icon: "🤖",
+  },
+  {
+    title: "Capacity Expansion",
+    description: "Companies investing heavily in expanding manufacturing capacity, building new plants, or scaling production facilities to meet growing demand.",
+    views: "4.1k",
+    trending: true,
+    companies: 1064,
+    sampleStocks: ["ADANIPORTS", "GRASIM", "JSWSTEEL"],
+    updatedAt: "March 5, 2026",
+    icon: "🏭",
+  },
+  {
+    title: "Solar Energy",
+    description: "Companies involved in solar power generation, manufacturing solar panels, or providing solar energy solutions for residential, commercial, and industrial use.",
+    views: "3.8k",
+    trending: true,
+    companies: 89,
+    sampleStocks: ["NTPC", "WAAREEENER", "CESC"],
+    updatedAt: "February 28, 2026",
+    icon: "☀️",
+  },
+  {
+    title: "Strategic Partnerships",
+    description: "Companies that have formed significant strategic alliances, joint ventures, or partnerships to expand market reach, share technology, or co-develop products.",
+    views: "3.6k",
+    trending: true,
+    companies: 901,
+    sampleStocks: ["COALINDIA", "GRASIM", "NESTLEIND"],
+    updatedAt: "March 3, 2026",
+    icon: "🤝",
+  },
+  {
+    title: "Electric Vehicles (EV)",
+    description: "Companies manufacturing electric vehicles, EV components, charging infrastructure, or providing related technology and services for the growing EV ecosystem.",
+    views: "2.7k",
+    trending: false,
+    companies: 91,
+    sampleStocks: ["BAJAJ-AUTO", "HEROMOTOCO", "TATAMOTORS"],
+    updatedAt: "February 25, 2026",
+    icon: "⚡",
+  },
+  {
+    title: "3D Printing",
+    description: "Companies whose primary business is industrial additive manufacturing, including selling 3D printers, materials, or large-scale printing services.",
+    views: "2.6k",
+    trending: true,
+    companies: 5,
+    sampleStocks: ["BASILIC", "DIGIKORE", "PHANTOMFX"],
+    updatedAt: "February 19, 2026",
+    icon: "🖨️",
+  },
+  {
+    title: "VFX and Animation",
+    description: "Companies specializing in visual effects, animation production, motion capture, and digital content creation for film, television, and gaming industries.",
+    views: "3.3k",
+    trending: false,
+    companies: 5,
+    sampleStocks: ["BASILIC", "DIGIKORE", "PHANTOMFX"],
+    updatedAt: "March 2, 2026",
+    icon: "🎬",
+  },
+  {
+    title: "5G Technology",
+    description: "Companies involved in building 5G network equipment or infrastructure, or in creating 5G-enabled products and services that support faster wireless connectivity.",
+    views: "1.9k",
+    trending: false,
+    companies: 14,
+    sampleStocks: ["BHARTIARTL", "RELIANCE", "HCLTECH"],
+    updatedAt: "February 15, 2026",
+    icon: "📡",
+  },
+  {
+    title: "Battery Technology",
+    description: "Companies that design, develop, or manufacture battery cells, modules, or full energy storage systems, or that operate large-scale battery production facilities.",
+    views: "1.6k",
+    trending: false,
+    companies: 38,
+    sampleStocks: ["EXIDEIND", "AMARAJABAT", "TABORAELE"],
+    updatedAt: "February 22, 2026",
+    icon: "🔋",
+  },
+  {
+    title: "Major Contract Wins",
+    description: "Companies that have recently won significant contracts or orders, indicating strong future revenue visibility and business momentum.",
+    views: "2.1k",
+    trending: false,
+    companies: 383,
+    sampleStocks: ["LT", "BEL", "HAL"],
+    updatedAt: "March 6, 2026",
+    icon: "📋",
+  },
+  {
+    title: "Mergers & Acquisitions",
+    description: "Companies involved in recent mergers, acquisitions, or takeover activities that could reshape their market position and competitive landscape.",
+    views: "1.8k",
+    trending: false,
+    companies: 479,
+    sampleStocks: ["ADANIENT", "RELIANCE", "TATACOMM"],
+    updatedAt: "March 4, 2026",
+    icon: "🔄",
+  },
+  {
+    title: "Space Technology",
+    description: "Companies engaged in satellite manufacturing, launch services, space exploration technology, or providing space-based data and communication services.",
+    views: "1.4k",
+    trending: false,
+    companies: 17,
+    sampleStocks: ["HAL", "BEL", "CENTUMELE"],
+    updatedAt: "February 20, 2026",
+    icon: "🚀",
+  },
+  {
+    title: "Agriculture Technology",
+    description: "Companies that offer technology for farming — such as precision sensors, automation, analytics, or smart irrigation systems — that help farmers increase yields.",
+    views: "1.3k",
+    trending: false,
+    companies: 20,
+    sampleStocks: ["UPL", "PI", "RALLIS"],
+    updatedAt: "February 26, 2026",
+    icon: "🌾",
+  },
+  {
+    title: "Blockchain Technology",
+    description: "Companies developing or leveraging blockchain and distributed ledger technology for applications in finance, supply chain, and digital identity.",
+    views: "1.1k",
+    trending: false,
+    companies: 8,
+    sampleStocks: ["INFY", "TCS", "WIPRO"],
+    updatedAt: "February 18, 2026",
+    icon: "⛓️",
+  },
+  {
+    title: "Excellent Order Book",
+    description: "Companies with outstanding order books that indicate strong future revenue and sustained demand across infrastructure, defense, and industrial sectors.",
+    views: "2.3k",
+    trending: false,
+    companies: 446,
+    sampleStocks: ["LT", "BEL", "BHEL"],
+    updatedAt: "March 7, 2026",
+    icon: "📒",
+  },
+  {
+    title: "Biotechnology",
+    description: "Companies engaged in discovering, developing, or commercializing biological drugs, therapies, or diagnostic tests through lab work, clinical trials, and regulatory review.",
+    views: "1.2k",
+    trending: false,
+    companies: 33,
+    sampleStocks: ["BIOCON", "DIVISLAB", "LALPATHLAB"],
+    updatedAt: "March 6, 2026",
+    icon: "🧬",
+  },
+];
 
 const Discovery = () => {
   const [search, setSearch] = useState("");
-  const [activeSector, setActiveSector] = useState("All");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [bucketType, setBucketType] = useState("All");
 
-  const filtered = allStocks.filter(s => {
-    const matchSearch = s.symbol.includes(search.toUpperCase()) || s.name.toLowerCase().includes(search.toLowerCase());
-    const matchSector = activeSector === "All" || s.sector === activeSector;
-    return matchSearch && matchSector;
-  });
+  const filtered = buckets.filter(b =>
+    b.title.toLowerCase().includes(search.toLowerCase()) ||
+    b.description.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-3xl font-bold text-foreground">Discovery</h1>
-          <p className="text-sm text-muted-foreground mt-1">Screen and discover Indian stocks</p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <h1 className="text-3xl font-bold text-foreground">
+            Trending Stock Market Discoveries
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            Explore investment themes, sectors, and emerging trends across the Indian stock market
+          </p>
         </motion.div>
 
-        {/* Search & Filter */}
+        {/* Search & Controls */}
         <motion.div
-          className="mt-6 flex flex-col sm:flex-row gap-3"
+          className="flex flex-col sm:flex-row gap-3 mb-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
@@ -47,75 +215,126 @@ const Discovery = () => {
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Search by name or symbol..."
-              className="w-full h-10 pl-9 pr-4 rounded-xl bg-card border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              placeholder="Search by name or description"
+              className="w-full h-11 pl-10 pr-4 rounded-xl bg-card border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
-          <div className="flex items-center gap-2 overflow-x-auto pb-1">
-            <Filter className="h-4 w-4 text-muted-foreground shrink-0" />
-            {sectors.map(s => (
+          <div className="flex items-center gap-2">
+            <div className="flex items-center bg-card border rounded-lg overflow-hidden">
               <button
-                key={s}
-                onClick={() => setActiveSector(s)}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
-                  activeSector === s ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground hover:bg-primary/10"
-                }`}
+                onClick={() => setViewMode("grid")}
+                className={`p-2.5 transition-colors ${viewMode === "grid" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
               >
-                {s}
+                <LayoutGrid className="h-4 w-4" />
               </button>
-            ))}
+              <button
+                onClick={() => setViewMode("list")}
+                className={`p-2.5 transition-colors ${viewMode === "list" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+              >
+                <List className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="relative">
+              <select
+                value={bucketType}
+                onChange={e => setBucketType(e.target.value)}
+                className="appearance-none h-11 pl-4 pr-10 rounded-xl bg-card border text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring cursor-pointer"
+              >
+                <option value="All">Bucket Type</option>
+                <option value="Trending">Trending</option>
+                <option value="Technology">Technology</option>
+                <option value="Energy">Energy</option>
+                <option value="Corporate">Corporate</option>
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+            </div>
           </div>
         </motion.div>
 
-        {/* Table */}
-        <motion.div
-          className="card-elevated overflow-hidden mt-6"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-        >
-          <table className="w-full data-table">
-            <thead>
-              <tr>
-                <th>Stock</th><th>Sector</th><th className="text-right">Price</th>
-                <th className="text-right">Change</th><th className="text-right">P/E</th>
-                <th className="text-right">M.Cap</th><th className="text-right">Rating</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map(s => (
-                <tr key={s.symbol} className="cursor-pointer">
-                  <td>
-                    <div>
-                      <span className="font-mono font-semibold text-sm">{s.symbol}</span>
-                      <p className="text-xs text-muted-foreground">{s.name}</p>
-                    </div>
-                  </td>
-                  <td><span className="badge-info">{s.sector}</span></td>
-                  <td className="text-right font-mono text-sm font-medium">₹{s.price.toLocaleString()}</td>
-                  <td className="text-right">
-                    <span className={`inline-flex items-center gap-0.5 text-xs font-mono font-semibold ${s.change >= 0 ? "text-bullish" : "text-bearish"}`}>
-                      {s.change >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-                      {s.change >= 0 ? "+" : ""}{s.change}%
+        {/* Bucket Cards Grid */}
+        <div className={viewMode === "grid"
+          ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+          : "flex flex-col gap-4"
+        }>
+          {filtered.map((bucket, i) => (
+            <motion.div
+              key={bucket.title}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.04 }}
+              className="group card-elevated p-5 flex flex-col justify-between cursor-pointer hover:-translate-y-1 relative overflow-hidden"
+            >
+              {/* Top row: views + trending */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                      <Eye className="h-3 w-3" />
+                      {bucket.views} views
                     </span>
-                  </td>
-                  <td className="text-right font-mono text-sm">{s.pe}x</td>
-                  <td className="text-right font-mono text-sm text-muted-foreground">{s.mcap}</td>
-                  <td className="text-right">
-                    <div className="flex justify-end gap-0.5">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} className={`h-3 w-3 ${i < s.rating ? "text-warning fill-warning" : "text-border"}`} />
-                      ))}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {filtered.length === 0 && (
-            <div className="p-10 text-center text-sm text-muted-foreground">No stocks match your criteria.</div>
-          )}
-        </motion.div>
+                    {bucket.trending && (
+                      <span className="inline-flex items-center gap-1 text-xs font-medium text-bullish bg-bullish/10 px-2 py-0.5 rounded-full">
+                        <TrendingUp className="h-3 w-3" />
+                        Trending
+                      </span>
+                    )}
+                  </div>
+                  <button className="h-8 w-8 rounded-full bg-warning/20 text-warning flex items-center justify-center hover:bg-warning/30 transition-colors">
+                    <Star className="h-4 w-4" />
+                  </button>
+                </div>
+
+                {/* Title */}
+                <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
+                  {bucket.title}
+                </h3>
+
+                {/* Description */}
+                <p className="text-sm text-muted-foreground mt-2 line-clamp-3 leading-relaxed">
+                  {bucket.description}
+                </p>
+              </div>
+
+              {/* Bottom section */}
+              <div className="mt-5">
+                {/* Updated date */}
+                <div className="flex items-center gap-1.5 text-xs mb-3">
+                  <span className="h-2 w-2 rounded-full bg-bullish animate-pulse" />
+                  <span className="text-bullish font-medium">Updated at {bucket.updatedAt}</span>
+                </div>
+
+                {/* Company avatars + count */}
+                <div className="flex items-center gap-2">
+                  <div className="flex -space-x-2">
+                    {bucket.sampleStocks.slice(0, 3).map((stock, j) => (
+                      <div
+                        key={stock}
+                        className="h-7 w-7 rounded-full bg-secondary border-2 border-card flex items-center justify-center text-[9px] font-bold text-foreground"
+                        title={stock}
+                      >
+                        {stock.slice(0, 2)}
+                      </div>
+                    ))}
+                  </div>
+                  <span className="text-sm font-medium text-foreground">
+                    {bucket.companies} companies
+                  </span>
+                </div>
+              </div>
+
+              {/* Decorative icon */}
+              <div className="absolute bottom-4 right-4 text-4xl opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none">
+                {bucket.icon}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {filtered.length === 0 && (
+          <div className="text-center py-20 text-muted-foreground">
+            No discoveries match your search.
+          </div>
+        )}
       </div>
     </div>
   );
